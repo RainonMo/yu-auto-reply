@@ -1,20 +1,21 @@
-# yu-auto-reply 自动回复
+# 总结
 
-> 作者：[程序员鱼皮](https://github.com/liyupi)
-> 
-> 编程学习圈：[编程导航知识星球](https://yupi.icu)
-
-[toc]
-
-基于 Java Spring Boot 的平台监控及自动回复工具，支持灵活地配置多个监控任务，支持一键部署！
-
-演示视频：https://www.bilibili.com/video/BV1WX4y1o7aL
-
-![](doc/演示.png)
-
-本项目采用多种设计模式，解耦监控者及回答者，可以灵活配置多个不同平台的监控，并绑定不同类型的自动回复。
-
-🙏🏻 大家喜欢这个项目的话，感谢动手点点 star，后面作者可能会官方提供更多的平台监控支持。
+调用的是openAI的接口
+```java
+public CreateCompletionResponse createCompletion(CreateCompletionRequest request, String openAiApiKey) {
+        if (StringUtils.isBlank(openAiApiKey)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "未传 openAiApiKey");
+        }
+        String url = "https://api.openai.com/v1/completions";
+        String json = JSONUtil.toJsonStr(request);
+        String result = HttpRequest.post(url)
+                .header("Authorization", "Bearer " + openAiApiKey)
+                .body(json)
+                .execute()
+                .body();
+        return JSONUtil.toBean(result, CreateCompletionResponse.class);
+    }
+```
 
 ## 功能特性
 
@@ -111,11 +112,6 @@ task:
 1）编写一个类，实现 `answerer/Answerer` 接口
 
 2）修改 `factory/AnswererFactory` 的 `createAnswerer` 方法，补充创建你自己的回答者
-
-
-## 免费 ChatGPT 交流群
-
-![](doc/ChatGPT交流.png)
 
 
 ## 欢迎贡献
